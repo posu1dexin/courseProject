@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NY Times Top Stories</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        #results {
+            margin-top: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+        .article {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .title {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        .abstract {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>NY Times Top Stories</h1>
+        <button id="fetchButton">Fetch Top Stories</button>
+    </div>
+    <div id="results"></div>
+
+    <script>
+        $(document).ready(function(){
+            $('#fetchButton').click(function(){
+                $.ajax({
+                    url: '/fetch-data',
+                    method: 'GET',
+                    success: function(data){
+                        let resultsDiv = $('#results');
+                        resultsDiv.empty();
+                        data.results.forEach(article => {
+                            let articleDiv = $('<div class="article"></div>');
+                            articleDiv.append(`<div class="title">${article.title}</div>`);
+                            articleDiv.append(`<div class="abstract">${article.abstract}</div>`);
+                            if (article.url) {
+                                articleDiv.append(`<a href="${article.url}" target="_blank">Read more</a>`);
+                            }
+                            resultsDiv.append(articleDiv);
+                        });
+                    },
+                    error: function(error){
+                        $('#results').html('<p>An error occurred</p>');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
